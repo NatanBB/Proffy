@@ -1,35 +1,58 @@
 import React from 'react';
+import api from '../../services/api';
 
 import whatsappIcon from '../../assets/images/icons/whatsapp.svg'
 
 import './styles.css'
 
-function TeacherItem() {
+export interface Teacher {
+  id: number,
+  avatar: string;
+  bio: string;
+  cost: number;
+  name: string;
+  subject: string;
+  whatsapp: string;
+}
+
+interface TeacherItemProps {
+  teacher: Teacher
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher }) => {
+  function createNewConnection() {
+    api.post('connections', {
+      user_id: teacher.id
+    })
+  }
+  
   return(
     <article className="teacher-item">
       <header>
-        <img src="https://scontent-gru2-1.xx.fbcdn.net/v/t1.0-9/p960x960/71514120_1419697394849502_7688030041531219968_o.jpg?_nc_cat=107&_nc_sid=85a577&_nc_ohc=gXogzvYi1HYAX9gnYr9&_nc_ht=scontent-gru2-1.xx&_nc_tp=6&oh=0731af6e3d94cf5fd94ae6099380279f&oe=5F4FECCB" alt="Natan facebook"/>
+        <img src={teacher.avatar} alt={teacher.name}/>
         <div>
-          <strong>Natan Borba Boos</strong>
-          <span>Química</span>
+          <strong>{teacher.name}</strong>
+          <span>{teacher.subject}</span>
         </div>
       </header>
 
       <p>
-        Entusiasta das melhores tecnologias de química avançada.
-        <br/><br/>
-        Apaixonado por explodir coisas em laboratórios e por mudar a vida das pessoas atráves de experiências. Mais de 200.000 pessoas já passaram por uma das minhas explosões.
+        {teacher.bio}
       </p>
 
       <footer>
         <p>
           Preço/hora
-          <strong>R$ 80,00</strong>
+          <strong>R$ {teacher.cost}</strong>
         </p>
-        <button type="button">
+        <a
+          target="_blank" 
+          onClick={createNewConnection} 
+          href={`https://wa.me/${teacher.whatsapp}`
+        }>
           <img src={whatsappIcon} alt="Whatsapp"/>
           Entrar em contato
-        </button>
+        </a>
       </footer>
     </article>
   );
